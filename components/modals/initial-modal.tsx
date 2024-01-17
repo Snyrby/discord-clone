@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import FileUpload from "@/components/file-upload";
+import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
@@ -30,7 +30,7 @@ const formSchema = z.object({
   imageUrl: z.string().min(1, { message: "Server image is required." }),
 });
 
-const InitialModal = () => {
+export const InitialModal = () => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -123,5 +123,3 @@ const InitialModal = () => {
     </Dialog>
   );
 };
-
-export default InitialModal;

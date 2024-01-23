@@ -13,12 +13,14 @@ type FileUploadProps = {
   onChange: (url?: string) => void;
   value: string;
   endpoint: "messageFile" | "serverImage";
+  edit?: boolean;
 };
 
 export const FileUpload = ({
   onChange,
   value,
   endpoint,
+  edit
 }: FileUploadProps) => {
   const [imageId, setImageId] = useState("");
   const fileType = value?.split(".").pop();
@@ -29,7 +31,7 @@ export const FileUpload = ({
         <button
           onClick={() => {
             onChange(""); 
-            deleteValue(imageId);
+            {edit !== true && deleteValue(imageId)};
           }}
           className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
           type="button"

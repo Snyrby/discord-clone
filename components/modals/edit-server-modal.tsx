@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { Server } from "@prisma/client";
 import { useEffect } from "react";
+import { deleteValue } from "@/lib/deleteFile";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required." }),
@@ -53,6 +54,10 @@ export const EditServerModal = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (values.imageUrl !== server?.imageUrl) {
+        // @ts-ignore
+        deleteValue(server.imageUrl)
+      }
       await axios.patch<Server>(`/api/servers/${server?.id}`, values);
       form.reset();
       router.refresh();

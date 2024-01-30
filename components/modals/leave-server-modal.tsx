@@ -8,20 +8,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Check, Copy, RefreshCw } from "lucide-react";
-import { useOrigin } from "@/hooks/use-origin";
 import { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export const LeaveServerModal = () => {
-  const { onOpen, isOpen, onClose, type, data } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const isModalOpen = isOpen && type === "leaveServer";
   const { server } = data;
-  const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const onClick = async () => {
+    try {
+      setIsLoading(true);
+      await axios.patch(`/api/servers/${server?.id}/leave`);
+      onClose();
+      router.refresh();
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -40,8 +51,22 @@ export const LeaveServerModal = () => {
         </DialogHeader>
         <DialogFooter className="bg-gray-100 px-6 py-4">
           <div className="flex items-center justify-between w-full">
-            <Button className="" disabled={isLoading}>Cancel</Button>
-            <Button className=""disabled={isLoading}>Confirm</Button>
+            <Button
+              className=""
+              disabled={isLoading}
+              onClick={onClose}
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+            <Button
+              className=""
+              disabled={isLoading}
+              onClick={onClick}
+              variant="primary"
+            >
+              {isLoading ? "Leaving" : "Confirm"}
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>

@@ -55,8 +55,7 @@ export const EditServerModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (values.imageUrl !== server?.imageUrl) {
-        // @ts-ignore
-        deleteValue(server.imageUrl)
+        deleteValue(server?.imageUrl);
       }
       await axios.patch<Server>(`/api/servers/${server?.id}`, values);
       form.reset();

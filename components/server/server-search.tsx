@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CommandDialog } from "@/components/ui/command";
+import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command";
 
 type ServerSearchProps = {
   data: {
@@ -62,7 +62,14 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
             </kbd>
           ))}
       </button>
-      <CommandDialog></CommandDialog>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandInput placeholder="Seach all channels and members" />
+          <CommandList>
+            <CommandEmpty>
+              No Results Found
+            </CommandEmpty>
+          </CommandList>
+      </CommandDialog>
     </>
   );
 };

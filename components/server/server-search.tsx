@@ -2,7 +2,15 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { useParams, useRouter } from "next/navigation";
 
 type ServerSearchProps = {
   data: {
@@ -21,9 +29,37 @@ type ServerSearchProps = {
 export const ServerSearch = ({ data }: ServerSearchProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const params = useParams();
+
   useEffect(() => {
     setIsMounted(true);
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((open) => !open);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
+
+  const onClick = ({
+    id,
+    type,
+  }: {
+    id: string;
+    type: "channel" | "member";
+  }) => {
+    setOpen(false);
+    if (type === "member") {
+      return router.push(`/servers/${params?.serverId}/conversations/${id}`);
+    }
+    if (type === "channel") {
+      return router.push(`/servers/${params?.serverId}/channels/${id}`);
+    }
+  };
+
   if (!isMounted) {
     return "";
   }
@@ -63,12 +99,28 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
           ))}
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-          <CommandInput placeholder="Seach all channels and members" />
-          <CommandList>
-            <CommandEmpty>
-              No Results Found
-            </CommandEmpty>
-          </CommandList>
+        <CommandInput placeholder="Seach all channels and members" />
+        <CommandList>
+          <CommandEmpty>No Results Found</CommandEmpty>
+          {data.map(({ label, type, data }) => {
+            if (!data?.length) return null;
+            return (
+              <CommandGroup key={label} heading={label}>
+                {data?.map(({ id, icon, name }) => {
+                  return (
+                    <CommandItem
+                      key={id}
+                      onSelect={() => onClick({ id, type })}
+                    >
+                      {icon}
+                      <span>{name}</span>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            );
+          })}
+        </CommandList>
       </CommandDialog>
     </>
   );

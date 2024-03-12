@@ -1,5 +1,5 @@
 datasource db {
-  provider     = "mysql"
+  provider     = "mongodb"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -9,11 +9,11 @@ generator client {
 }
 
 model Profile {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @unique
   name String
-  imageUrl String @db.Text
-  email String @db.Text
+  imageUrl String @db.String
+  email String @db.String
 
   servers Server[]
   members Member[]
@@ -24,12 +24,12 @@ model Profile {
 }
 
 model Server {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
-  imageUrl String @db.Text
+  imageUrl String @db.String
   inviteCode String @unique
 
-  profileId String
+  profileId String @db.ObjectId
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   members Member[]
@@ -47,13 +47,13 @@ enum MemberRole {
 }
 
 model Member {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   role MemberRole @default(GUEST)
 
-  profileId String
+  profileId String @db.ObjectId
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
+  serverId String @db.ObjectId
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -69,14 +69,14 @@ enum ChannelType {
 }
 
 model Channel {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   type ChannelType @default(TEXT)
 
-  profileId String
+  profileId String @db.ObjectId
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
+  serverId String @db.ObjectId
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())

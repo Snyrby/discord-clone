@@ -113,7 +113,11 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
                       onSelect={() => onClick({ id, type })}
                     >
                       {icon}
-                      <span>{name}</span>
+                      {name.split(" ")[1] !== "null" ? (
+                        <span>{name}</span>
+                      ) : (
+                        <span>{name.split(" ")[0]}</span>
+                      )}
                     </CommandItem>
                   );
                 })}

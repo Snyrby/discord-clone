@@ -79,7 +79,9 @@ export const ChatItem = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log(isLoading);
       console.log(values);
+      setTimeout("", 5000)
     } catch (error) {
       console.log(error);
     }
@@ -184,6 +186,12 @@ export const ChatItem = ({
                               dark:text-zinc-200"
                             placeholder="Edited Message"
                             {...field}
+                            onBlur={(e) => {
+                              if (e.relatedTarget?.localName !== "button" && e.relatedTarget?.innerHTML !== "Save") {
+                                form.reset();
+                                setIsEditing(false);
+                              }
+                            }}
                           />
                         </div>
                       </FormControl>
@@ -191,7 +199,7 @@ export const ChatItem = ({
                   )}
                 />
                 <Button disabled={isLoading} size="sm" variant="primary">
-                  Save
+                  {isLoading ? "Saving" : "Save"}
                 </Button>
               </form>
               <span className="text-[10px] mt-1 text-zinc-400">

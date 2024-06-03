@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { useParams, useRouter } from "next/navigation";
+import { EmojiPicker } from "@/components/emoji-picker";
 
 type ChatItemProps = {
   id: string;
@@ -119,13 +120,19 @@ export const ChatItem = ({
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
-        <button onClick={onMemberClick} className="cursor-pointer hover:drop-shadow-md transition">
+        <button
+          onClick={onMemberClick}
+          className="cursor-pointer hover:drop-shadow-md transition"
+        >
           <UserAvatar src={member.profile.imageUrl} />
         </button>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <button onClick={onMemberClick} className="font-semibold text-sm hover:underline cursor-pointer">
+              <button
+                onClick={onMemberClick}
+                className="font-semibold text-sm hover:underline cursor-pointer"
+              >
                 {member.profile.name}
               </button>
               <ActionTooltip label={member.role}>
@@ -202,6 +209,13 @@ export const ChatItem = ({
                             placeholder="Edited Message"
                             {...field}
                           />
+                          <div className="absolute top-2 right-4">
+                            <EmojiPicker
+                              onChange={(emoji: string) =>
+                                field.onChange(`${field.value} ${emoji}`)
+                              }
+                            />
+                          </div>
                         </div>
                       </FormControl>
                     </FormItem>
